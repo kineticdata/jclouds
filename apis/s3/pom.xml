@@ -26,7 +26,7 @@
     <relativePath>../../project/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.jclouds.api</groupId>
-  <artifactId>s3</artifactId>
+  <artifactId>s3-kinetic</artifactId>
   <name>jclouds s3 api</name>
   <description>jclouds components to access an implementation of S3</description>
   <packaging>bundle</packaging>

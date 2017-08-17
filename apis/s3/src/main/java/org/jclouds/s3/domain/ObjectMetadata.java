@@ -30,6 +30,10 @@ import org.jclouds.io.ContentMetadata;
  */
 public interface ObjectMetadata extends Comparable<ObjectMetadata> {
 
+  public enum ServerSideEncryption {
+    NONE, AES256
+  }
+
    public enum StorageClass {
       STANDARD, STANDARD_IA, REDUCED_REDUNDANCY
    }
@@ -53,6 +57,8 @@ public interface ObjectMetadata extends Comparable<ObjectMetadata> {
     * another user (deleted and rewritten), the new object will have a new owner.
     */
    CanonicalUser getOwner();
+
+   ServerSideEncryption getServerSideEncryption();
 
    /**
     * Currently defaults to 'STANDARD' and not used.

@@ -16,14 +16,16 @@
  */
 package org.jclouds.aws.s3;
 
-import static org.jclouds.aws.s3.blobstore.options.AWSS3PutObjectOptions.Builder.storageClass;
+import static org.jclouds.s3.reference.S3Headers.SERVER_SIDE_ENCRYPTION;
 
+import org.jclouds.aws.s3.blobstore.options.AWSS3PutObjectOptions;
 import org.jclouds.aws.s3.internal.BaseAWSS3ClientExpectTest;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.blobstore.domain.BlobBuilder;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.s3.blobstore.functions.BlobToObject;
+import org.jclouds.s3.domain.ObjectMetadata.ServerSideEncryption;
 import org.jclouds.s3.domain.ObjectMetadata.StorageClass;
 import org.testng.annotations.Test;
 
@@ -75,6 +77,37 @@ public class AWSS3ClientExpectTest extends BaseAWSS3ClientExpectTest {
       );
 
       client.putObject("test", blobToObject.apply(blob),
-         storageClass(StorageClass.REDUCED_REDUNDANCY));
+      //    storageClass(StorageClass.REDUCED_REDUNDANCY));
+         AWSS3PutObjectOptions.Builder.storageClass(StorageClass.REDUCED_REDUNDANCY));
+   }
+
+   @Test
+   public void testPutWithServerSideEncryption() {
+      Injector injector = createInjector(Functions.forMap(ImmutableMap.<HttpRequest, HttpResponse>of()), createModule(), setupProperties());
+
+      Blob blob = injector.getInstance(BlobBuilder.class).name("test").payload("content").build();
+      BlobToObject blobToObject = injector.getInstance(BlobToObject.class);
+
+      AWSS3Client client = requestsSendResponses(bucketLocationRequest, bucketLocationResponse,
+         HttpRequest.builder()
+                     .method("PUT")
+                     .endpoint("https://test.s3-eu-west-1.amazonaws.com/test")
+                     .addHeader("Expect", "100-continue")
+                     .addHeader(SERVER_SIDE_ENCRYPTION, "AES256")
+                     .addHeader("Host", "test.s3-eu-west-1.amazonaws.com")
+                     .addHeader("Date", CONSTANT_DATE)
+                     .addHeader("Authorization", "AWS identity:wTWjt+DikN+hL0DBLHuWWVUloJk=")
+                     .payload("content").build(),
+         HttpResponse.builder()
+                     .statusCode(200)
+                     .addHeader("x-amz-id-2", "w0rL+9fALQiCOToesVQefs8WalIgn+ZhMD7hHMKYud/xv7MyKkAWQOtFNEfK97Ri")
+                     .addHeader("x-amz-request-id", "7A84C3CD4437A4C0")
+                     .addHeader("Date", CONSTANT_DATE)
+                     .addHeader("ETag", "437b930db84b8079c2dd804a71936b5f")
+                     .addHeader("Server", "AmazonS3").build()
+      );
+
+      client.putObject("test", blobToObject.apply(blob),
+         AWSS3PutObjectOptions.Builder.serverSideEncryption(ServerSideEncryption.AES256));
    }
 }

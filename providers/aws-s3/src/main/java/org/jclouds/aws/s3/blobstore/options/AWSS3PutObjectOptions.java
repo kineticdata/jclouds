@@ -30,6 +30,14 @@ public class AWSS3PutObjectOptions extends PutObjectOptions {
 
    public static class Builder {
 
+    /**
+     * @see AWSS3PutObjectOptions#serverSideEncryption
+     */
+    public static AWSS3PutObjectOptions serverSideEncryption(ObjectMetadata.ServerSideEncryption serverSideEncryption) {
+       AWSS3PutObjectOptions options = new AWSS3PutObjectOptions();
+       return options.serverSideEncryption(serverSideEncryption);
+    }
+
       /**
        * @see AWSS3PutObjectOptions#storageClass
        */
@@ -45,6 +53,16 @@ public class AWSS3PutObjectOptions extends PutObjectOptions {
          AWSS3PutObjectOptions options = new AWSS3PutObjectOptions();
          return options.withAcl(acl);
       }
+   }
+
+   private ObjectMetadata.ServerSideEncryption serverSideEncryption = ObjectMetadata.ServerSideEncryption.NONE;
+
+   public AWSS3PutObjectOptions serverSideEncryption(ObjectMetadata.ServerSideEncryption serverSideEncryption) {
+      this.serverSideEncryption = serverSideEncryption;
+      if (serverSideEncryption != ObjectMetadata.ServerSideEncryption.NONE) {
+         this.replaceHeader(S3Headers.SERVER_SIDE_ENCRYPTION, this.serverSideEncryption.toString());
+      }
+      return this;
    }
 
    private ObjectMetadata.StorageClass storageClass = ObjectMetadata.StorageClass.STANDARD;

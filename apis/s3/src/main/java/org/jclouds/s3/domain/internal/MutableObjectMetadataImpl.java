@@ -41,17 +41,20 @@ public class MutableObjectMetadataImpl implements MutableObjectMetadata {
    private String eTag;
    private CanonicalUser owner;
    private StorageClass storageClass;
+   private ServerSideEncryption serverSideEncryption;
    private String cacheControl;
    private Map<String, String> userMetadata = Maps.newHashMap();
    private MutableContentMetadata contentMetadata;
 
    public MutableObjectMetadataImpl() {
       this.storageClass = StorageClass.STANDARD;
+      this.serverSideEncryption = ServerSideEncryption.NONE;
       this.contentMetadata = new BaseMutableContentMetadata();
    }
 
    public MutableObjectMetadataImpl(ObjectMetadata from) {
-      this.storageClass = StorageClass.STANDARD;
+      this.storageClass = from.getStorageClass();
+      this.serverSideEncryption = from.getServerSideEncryption();
       this.contentMetadata = new BaseMutableContentMetadata();
       HttpUtils.copy(from.getContentMetadata(), this.contentMetadata);
       this.key = from.getKey();
@@ -97,6 +100,11 @@ public class MutableObjectMetadataImpl implements MutableObjectMetadata {
    @Override
    public CanonicalUser getOwner() {
       return owner;
+   }
+
+   @Override
+   public ServerSideEncryption getServerSideEncryption() {
+      return serverSideEncryption;
    }
 
    /**
@@ -197,6 +205,11 @@ public class MutableObjectMetadataImpl implements MutableObjectMetadata {
       this.owner = owner;
    }
 
+   @Override
+   public void setServerSideEncryption(ServerSideEncryption serverSideEncryption) {
+      this.serverSideEncryption = serverSideEncryption;
+   }
+
    /**
     *{@inheritDoc}
     */
@@ -256,11 +269,9 @@ public class MutableObjectMetadataImpl implements MutableObjectMetadata {
 
    @Override
    public String toString() {
-      return String
-               .format(
-                        "[key=%s, bucket=%s, uri=%s, eTag=%s, cacheControl=%s, contentMetadata=%s, lastModified=%s, owner=%s, storageClass=%s, userMetadata=%s]",
-                        key, bucket, uri, eTag, cacheControl, contentMetadata, lastModified, owner, storageClass,
-                        userMetadata);
+      return String.format(
+         "[key=%s, bucket=%s, uri=%s, eTag=%s, cacheControl=%s, contentMetadata=%s, lastModified=%s, owner=%s, serverSideEncryption=%s, storageClass=%s, userMetadata=%s]",
+         key, bucket, uri, eTag, cacheControl, contentMetadata, lastModified, owner, serverSideEncryption, storageClass, userMetadata);
    }
 
 }

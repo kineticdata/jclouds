@@ -76,6 +76,11 @@ public final class S3Headers {
    public static final String SECURITY_TOKEN = HEADER_PREFIX + "security-token";
 
    /**
+    * Header describing the kind of server-side encryption a user wants
+    */
+   public static final String SERVER_SIDE_ENCRYPTION = HEADER_PREFIX + "server-side-encryption";
+
+   /**
     * Header describing what class of storage a user wants
     */
    public static final String STORAGE_CLASS = HEADER_PREFIX + "storage-class";

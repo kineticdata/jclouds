@@ -31,7 +31,9 @@ import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.rest.InvocationContext;
 import org.jclouds.s3.blobstore.functions.BlobToObjectMetadata;
+import org.jclouds.s3.domain.ObjectMetadata;
 import org.jclouds.s3.domain.MutableObjectMetadata;
+import org.jclouds.s3.reference.S3Headers;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -75,6 +77,12 @@ public class ParseObjectMetadataFromHeaders implements Function<HttpResponse, Mu
       // amz has an etag, but matches syntax for usermetadata
       to.getUserMetadata().remove("object-etag");
       to.setCacheControl(from.getFirstHeaderOrNull(HttpHeaders.CACHE_CONTROL));
+      String serverSideEncryption = from.getFirstHeaderOrNull(S3Headers.SERVER_SIDE_ENCRYPTION);
+      if (serverSideEncryption != null) {
+         to.setServerSideEncryption(ObjectMetadata.ServerSideEncryption.valueOf(serverSideEncryption));
+      }
+      // TODO: headObject does not populate STORAGE_CLASS. Reference:
+      // http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html
       return to;
    }
 

@@ -26,7 +26,7 @@
     <relativePath>../../project/pom.xml</relativePath>
   </parent>
   <groupId>org.apache.jclouds.provider</groupId>
-  <artifactId>aws-s3</artifactId>
+  <artifactId>aws-s3-kinetic</artifactId>
   <name>jclouds Amazon Simple Storage Service (S3) provider</name>
   <description>Simple Storage Service (S3) implementation targeted to Amazon Web Services</description>
   <packaging>bundle</packaging>
@@ -54,13 +54,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.jclouds.api</groupId>
-      <artifactId>s3</artifactId>
+      <artifactId>s3-kinetic</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.apache.jclouds.api</groupId>
-      <artifactId>s3</artifactId>
+      <artifactId>s3-kinetic</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>

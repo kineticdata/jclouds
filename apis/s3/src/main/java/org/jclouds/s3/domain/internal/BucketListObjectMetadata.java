@@ -41,10 +41,11 @@ public class BucketListObjectMetadata implements ObjectMetadata {
    private final String eTag;
    private final CanonicalUser owner;
    private final StorageClass storageClass;
+   private final ServerSideEncryption serverSideEncryption;
    private final ContentMetadata contentMetadata;
 
    public BucketListObjectMetadata(String key, String bucket, URI uri, Date lastModified, String eTag, byte[] md5,
-            long contentLength, CanonicalUser owner, StorageClass storageClass) {
+            long contentLength, CanonicalUser owner, StorageClass storageClass, ServerSideEncryption serverSideEncryption) {
       this.key = checkNotNull(key, "key");
       this.bucket = checkNotNull(bucket, "bucket");
       this.uri = checkNotNull(uri, "uri");
@@ -53,6 +54,7 @@ public class BucketListObjectMetadata implements ObjectMetadata {
       this.owner = owner;
       this.contentMetadata = new BaseImmutableContentMetadata(null, contentLength, md5, null, null, null, null);
       this.storageClass = storageClass;
+      this.serverSideEncryption = serverSideEncryption;
    }
 
    /**
@@ -85,6 +87,11 @@ public class BucketListObjectMetadata implements ObjectMetadata {
    @Override
    public CanonicalUser getOwner() {
       return owner;
+   }
+
+   @Override
+   public ServerSideEncryption getServerSideEncryption() {
+      return serverSideEncryption;
    }
 
    /**
@@ -171,8 +178,8 @@ public class BucketListObjectMetadata implements ObjectMetadata {
    @Override
    public String toString() {
       return String.format(
-               "[uri=%s, key=%s, bucket=%s, contentMetadata=%s, eTag=%s, lastModified=%s, owner=%s, storageClass=%s]",
-               uri, key, bucket, contentMetadata, eTag, lastModified, owner, storageClass);
+               "[uri=%s, key=%s, bucket=%s, contentMetadata=%s, eTag=%s, lastModified=%s, owner=%s, serverSideEncryption=%s, storageClass=%s]",
+               uri, key, bucket, contentMetadata, eTag, lastModified, owner, serverSideEncryption, storageClass);
    }
 
 }
